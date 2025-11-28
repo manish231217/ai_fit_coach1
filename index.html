@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FitCoach - Daily Fitness Tracking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <div class="logo">FC</div>
+        <div class="brand-text">
+          <h1>FitCoach AI</h1>
+          <p>Daily Fitness Tracking</p>
+        </div>
+      </div>
+      <div id="authHeader"></div>
+    </header>
+
+    <div class="main-grid">
+      <div class="card auth-panel" id="mainCard">
+        <div id="authPanel">
+          <h2>Start Your Fitness Journey</h2>
+          <div class="form-group">
+            <input type="email" id="email" class="form-input" placeholder="Enter your email" autocomplete="username">
+          </div>
+          <div class="form-group">
+            <input type="password" id="password" class="form-input" placeholder="Create a password" autocomplete="current-password">
+          </div>
+          <div class="button-group">
+            <button class="btn btn-primary" id="loginBtn">Sign In</button>
+            <button class="btn btn-secondary" id="registerBtn">Get Started</button>
+            <button class="btn btn-ghost" id="demoBtn">Try Demo</button>
+          </div>
+          <div id="errorMsg" class="error-message" style="display: none;"></div>
+        </div>
+
+        <div id="dashboard" style="display: none;">
+          <div class="dashboard-header">
+            <div>
+              <div class="welcome-text" id="welcomeSmall">Welcome back!</div>
+              <div class="user-email" id="userEmail"></div>
+            </div>
+            <div class="dashboard-controls">
+              <button id="askAIBtn" class="btn btn-ghost">Ask AI Coach</button>
+              <button id="resetProgressBtn" class="reset-progress-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17.645 6.35C16.195 4.9 14.205 4 12 4C7.575 4 4 7.575 4 12C4 16.425 7.575 20 12 20C15.73 20 18.84 17.445 19.73 14H17.645C16.83 16.33 14.61 18 12 18C8.685 18 6 15.315 6 12C6 8.685 8.685 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.645 6.35Z" fill="currentColor"/>
+                </svg>
+                Reset Progress
+              </button>
+              <button id="logoutBtn" class="btn btn-ghost">Sign Out</button>
+            </div>
+          </div>
+          
+          <!-- Stats Cards -->
+          <div class="stats-cards">
+            <div class="stat-card">
+              <div class="stat-icon">💪</div>
+              <div class="stat-number" id="currentWeight">-</div>
+              <div class="stat-description">Current Weight</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🎯</div>
+              <div class="stat-number" id="targetGoal">-</div>
+              <div class="stat-description">Your Goal</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-number" id="currentStreak">0</div>
+              <div class="stat-description">Consistency Days</div>
+            </div>
+          </div>
+          
+          <!-- Progress Circles -->
+          <div class="card">
+            <h3 style="color: var(--primary-dark); margin-bottom: 15px;">Your Progress</h3>
+            <div class="progress-circles">
+              <div class="progress-circle">
+                <div class="circle-container">
+                  <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+                    <circle class="circle-fg" cx="60" cy="60" r="54" stroke="#2e8b57" id="overallProgress"></circle>
+                  </svg>
+                  <div class="circle-value" id="overallProgressValue">0%</div>
+                </div>
+                <div class="circle-label">Overall</div>
+              </div>
+              <div class="progress-circle">
+                <div class="circle-container">
+                  <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+                    <circle class="circle-fg" cx="60" cy="60" r="54" stroke="#ff6b35" id="workoutProgress"></circle>
+                  </svg>
+                  <div class="circle-value" id="workoutProgressValue">0%</div>
+                </div>
+                <div class="circle-label">Workout</div>
+              </div>
+              <div class="progress-circle">
+                <div class="circle-container">
+                  <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+                    <circle class="circle-fg" cx="60" cy="60" r="54" stroke="#10b981" id="nutritionProgress"></circle>
+                  </svg>
+                  <div class="circle-value" id="nutritionProgressValue">0%</div>
+                </div>
+                <div class="circle-label">Nutrition</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Profile Info Card -->
+          <div class="info-card" style="margin-bottom: 25px;">
+            <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                Your Profile
+                <button id="editMetricsBtn" class="btn btn-ghost" style="padding: 3px 6px; font-size: 11px; min-width: 40px;">Edit</button>
+            </h3>
+            <div class="user-metrics">
+              <div class="metric-line">
+                <span class="metric-label">Name:</span>
+                <span class="metric-value" id="displayName">N/A</span>
+              </div>
+              <div class="metric-line">
+                <span class="metric-label">Age:</span>
+                <span class="metric-value" id="displayAge">N/A</span>
+                <span class="metric-divider">|</span>
+                <span class="metric-label">Gender:</span>
+                <span class="metric-value" id="displayGender">N/A</span>
+              </div>
+              <div class="metric-line">
+                <span class="metric-label">Height:</span>
+                <span class="metric-value" id="displayHeight">N/A</span>
+                <span class="metric-divider">|</span>
+                <span class="metric-label">Weight:</span>
+                <span class="metric-value" id="displayWeight">N/A</span>
+              </div>
+            </div>
+            <div class="metric-line" style="border-top: 1px solid rgba(46, 139, 87, 0.2); padding-top: 12px; margin-top: 8px;">
+              <span class="metric-label">Goal:</span>
+              <span class="metric-value" id="displayReason">Set your goal!</span>
+            </div>
+          </div>
+
+          <!-- Daily Progress -->
+          <div class="daily-progress">
+            <div class="phase-navigation">
+              <div>
+                <div class="phase-title" id="currentPhaseTitle">Phase 1: Foundation</div>
+                <div class="phase-days" id="currentPhaseDays">Days 1-28</div>
+              </div>
+              <div>
+                <button class="nav-btn" id="prevPhaseBtn" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Previous
+                </button>
+                <button class="nav-btn" id="nextPhaseBtn">
+                  Next
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <h4>Daily Progress Tracking</h4>
+            <p style="color: var(--text-medium); font-size: 14px; margin-bottom: 15px;">
+              Complete each day to build consistency. Today is highlighted.
+            </p>
+            
+            <div class="day-grid" id="dayGrid">
+              <!-- Days will be dynamically generated here -->
+            </div>
+          </div>
+
+          <!-- Progress Graph -->
+          <div id="progressGraph" class="progress-graph" style="display: none;">
+            <!-- Progress graph content will be inserted here by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <div class="side-panel">
+        <div class="info-card">
+          <h3>Daily Tips</h3>
+          <ul class="tips-list">
+            <li>💧 Drink 2-3L of water daily</li>
+            <li>🛌 Aim for 7-9 hours of sleep</li>
+            <li>🏋 Strength train 3-4x per week</li>
+            <li>🥗 Include protein in every meal</li>
+            <li>🚶‍♂ Take active breaks during work</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h3>Quick Stats</h3>
+          <div style="margin-top: 20px; display: grid; gap: 12px; font-size: 15px;">
+            <div style="display: flex; justify-content: space-between;">
+              <span>Workouts This Week</span>
+              <strong id="weeklyWorkouts">0</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Calories Burned</span>
+              <strong id="weeklyCalories">0</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Active Minutes</span>
+              <strong id="weeklyMinutes">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>Today's Motivation</h3>
+          <p style="margin-top: 16px; font-style: italic; color: var(--text-medium);" id="dailyQuote">
+            "The only bad workout is the one that didn't happen."
+          </p>
+        </div>
+
+        <div class="info-card">
+          <h3>Quick Actions</h3>
+          <div class="button-group" style="margin-top: 15px;">
+            <button id="openChatSmall" class="btn btn-primary">AI Coach</button>
+            <button id="openPlans" class="btn btn-secondary">My Plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details Overlay -->
+  <div class="details-overlay" id="detailsOverlay" aria-hidden="true">
+    <div class="details-popup" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+      <h3 id="detailsTitle">Complete Your Profile</h3>
+      <div style="color: rgba(255,255,255,0.85); font-size: 14px;">
+        A few details to personalize your FitCoach experience.
+      </div>
+
+      <div class="details-row">
+        <input id="popupName" class="details-input" type="text" placeholder="Full Name">
+        <input id="popupAge" class="details-input" type="number" placeholder="Age">
+      </div>
+      
+      <div class="details-row">
+        <select id="popupGender" class="details-select">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+        <input id="popupHeight" class="details-input" type="number" placeholder="Height (cm)">
+      </div>
+      
+      <div class="details-row">
+        <input id="popupWeight" class="details-input" type="number" placeholder="Weight (kg)">
+        <div></div> <!-- Empty cell for alignment -->
+      </div>
+
+      <div style="margin-top:8px;">
+        <textarea id="popupReason" class="details-textarea" placeholder="Why did you join FitCoach? (optional)"></textarea>
+      </div>
+
+      <div class="details-actions">
+        <button class="btn-light" id="popupSkipBtn">Skip</button>
+        <button class="btn-save" id="popupSaveBtn">Save Details</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Modal -->
+  <div class="plan-modal" id="planModal">
+    <div class="plan-content">
+      <div class="plan-header">
+        <h2 class="plan-title">Your 12-Week Fitness Plan</h2>
+        <button class="close-plan" id="closePlan">×</button>
+      </div>
+      
+      <div class="phase-cards">
+        <div class="phase-card">
+          <h4>Phase 1: Foundation (Weeks 1-4)</h4>
+          <div class="phase-details">
+            <div class="phase-detail">
+              <h5>Workout Schedule</h5>
+              <p>3-4 days/week full body</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Focus</h5>
+              <p>Learn proper form, build consistency</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Nutrition</h5>
+              <p>Maintenance calories, balanced macros</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Target</h5>
+              <p>Establish routine, improve mobility</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phase-card">
+          <h4>Phase 2: Progression (Weeks 5-8)</h4>
+          <div class="phase-details">
+            <div class="phase-detail">
+              <h5>Workout Schedule</h5>
+              <p>4-5 days/week split routine</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Focus</h5>
+              <p>Progressive overload, increased intensity</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Nutrition</h5>
+              <p>Slight surplus/deficit based on goals</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Target</h5>
+              <p>Strength gains, body composition improvements</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phase-card">
+          <h4>Phase 3: Optimization (Weeks 9-12)</h4>
+          <div class="phase-details">
+            <div class="phase-detail">
+              <h5>Workout Schedule</h5>
+              <p>5 days/week advanced programming</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Focus</h5>
+              <p>Peak performance, skill development</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Nutrition</h5>
+              <p>Optimized for performance and recovery</p>
+            </div>
+            <div class="phase-detail">
+              <h5>Target</h5>
+              <p>Master techniques, achieve personal bests</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div class="confirm-modal" id="confirmModal">
+    <div class="confirm-content">
+      <h3>Reset Progress?</h3>
+      <p>Are you sure you want to reset all your progress? This will clear your completed days and cannot be undone.</p>
+      <div class="confirm-buttons">
+        <button class="btn-cancel" id="cancelReset">Cancel</button>
+        <button class="btn-confirm" id="confirmReset">Reset Progress</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced AI Chat Panel -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="avatar">💪</div>
+      <h3>AI Fitness Coach</h3>
+      <button class="close-chat" id="closeChat">×</button>
+    </div>
+    
+    <div class="chat-body" id="chatBody">
+      <div class="message bot-message">
+        Hi! I'm your AI Fitness Coach. I can help you with workout plans, nutrition advice, progress tracking, and answering any fitness questions you have!
+      </div>
+      <div class="typing-indicator" id="typingIndicator">
+        Thinking<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+      </div>
+    </div>
+    
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Ask about workouts, diet, or progress...">
+      <button class="chat-send" id="chatSend">Send</button>
+    </div>
+  </div>
+ <script type="module" src="scripts.js"></script>
+</body>
+</html>
+     
